@@ -8,7 +8,15 @@ public class CanExplode : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		StartCoroutine (ExplodeInTime (2.0f));
+	}
+
+	private IEnumerator ExplodeInTime (float seconds)
+	{
+		YieldInstruction wait = new WaitForSeconds (seconds);
+		yield return wait;
 		Explode ();
+		yield return null;
 	}
 
 	private void Explode ()
@@ -26,10 +34,15 @@ public class CanExplode : MonoBehaviour
 		destroyed = 0;
 		
 		while (destroyed<hits.Length) {
-			DestroyObject (hits [destroyed].gameObject);
+			if (hits [destroyed].GetComponent<DieFromExplosion> () != null) {
+				DestroyObject (hits [destroyed].gameObject);
+			}
 			destroyed ++;
+
 		}
+		DestroyObject (gameObject);
 	}
+
 }
 	
 // Update is called once per frame
